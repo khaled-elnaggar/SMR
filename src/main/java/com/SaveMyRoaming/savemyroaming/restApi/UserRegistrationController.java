@@ -1,0 +1,59 @@
+package com.SaveMyRoaming.savemyroaming.restApi;
+
+import com.SaveMyRoaming.savemyroaming.DTO.UserDTO;
+import com.SaveMyRoaming.savemyroaming.entities.UserEntity;
+import com.SaveMyRoaming.savemyroaming.services.EmailVerificationService;
+import com.SaveMyRoaming.savemyroaming.services.UserRegistrationService;
+import com.SaveMyRoaming.savemyroaming.utils.Constants;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+
+@RestController
+public class UserRegistrationController implements UserRegistrationApi {
+
+    @Autowired
+    private ModelMapper dataMapper;
+
+    @Autowired
+    private UserRegistrationService userRegistrationService;
+
+    @Autowired
+    private EmailVerificationService emailVerificationService;
+
+
+    public UserRegistrationController(ModelMapper dataMapper, UserRegistrationService userRegistrationService) {
+        this.dataMapper = dataMapper;
+        this.userRegistrationService = userRegistrationService;
+    }
+
+    @Override
+    public ResponseEntity registerUser(UserDTO userDto , HttpServletRequest request)
+            throws UnsupportedEncodingException, MessagingException {
+        UserEntity data = dataMapper.map(userDto, UserEntity.class);
+        UserEntity newUser = userRegistrationService.saveNewUserData(data,getSiteURL(request));
+        UserDTO createdUser = dataMapper.map(newUser, UserDTO.class);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @Override
+    public String verifyUser(String code) {
+        if (emailVerificationService.verify(code)) {
+            return Constants.MSG_VERIFICATION_SUCCESS;
+        } else {
+            return Constants.MSG_VERIFICATION_FAILURE;
+        }
+    }
+
+    private String getSiteURL(HttpServletRequest request) {
+        String siteURL = request.getRequestURL().toString();
+        return siteURL.replace(request.getServletPath(), "");
+    }
+
+}
