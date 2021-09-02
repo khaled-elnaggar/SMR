@@ -19,7 +19,7 @@ public interface UserRegistrationApi {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-   ResponseEntity registerUser( @Valid @RequestBody UserDTO userDto , HttpServletRequest request) throws UnsupportedEncodingException, MessagingException;
+   ResponseEntity registerUser( @Valid @RequestBody UserDTO userDto , HttpServletRequest request, @RequestParam(name="g-recaptcha-response") String recaptchaResponse) throws UnsupportedEncodingException, MessagingException;
 
 
     @GetMapping("/verify")

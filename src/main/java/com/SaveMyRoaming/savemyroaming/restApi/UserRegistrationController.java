@@ -1,6 +1,7 @@
 package com.SaveMyRoaming.savemyroaming.restApi;
 
 import com.SaveMyRoaming.savemyroaming.DTO.UserDTO;
+import com.SaveMyRoaming.savemyroaming.capatcha.RecaptchaService;
 import com.SaveMyRoaming.savemyroaming.entities.UserEntity;
 import com.SaveMyRoaming.savemyroaming.services.EmailVerificationService;
 import com.SaveMyRoaming.savemyroaming.services.UserRegistrationService;
@@ -14,9 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 
 @RestController
 public class UserRegistrationController implements UserRegistrationApi {
+
+
 
     @Autowired
     private ModelMapper dataMapper;
@@ -26,6 +32,9 @@ public class UserRegistrationController implements UserRegistrationApi {
 
     @Autowired
     private EmailVerificationService emailVerificationService;
+    
+    @Autowired
+    private RecaptchaService recaptchaService;
 
 
     public UserRegistrationController(ModelMapper dataMapper, UserRegistrationService userRegistrationService) {
@@ -34,8 +43,20 @@ public class UserRegistrationController implements UserRegistrationApi {
     }
 
     @Override
-    public ResponseEntity registerUser(UserDTO userDto , HttpServletRequest request)
+    public ResponseEntity registerUser(UserDTO userDto , HttpServletRequest request, String recaptchaResponse)
             throws UnsupportedEncodingException, MessagingException {
+        //capatcha
+        String ip = request.getRemoteAddr();
+        String captchaVerifyMessage =
+                recaptchaService.verifyRecaptcha(ip, recaptchaResponse);
+
+        if ( StringUtils.isNotEmpty(captchaVerifyMessage)) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", captchaVerifyMessage);
+            return ResponseEntity.badRequest()
+                    .body(response);
+        }
+
         UserEntity data = dataMapper.map(userDto, UserEntity.class);
         UserEntity newUser = userRegistrationService.saveNewUserData(data,getSiteURL(request));
         UserDTO createdUser = dataMapper.map(newUser, UserDTO.class);
@@ -55,5 +76,7 @@ public class UserRegistrationController implements UserRegistrationApi {
         String siteURL = request.getRequestURL().toString();
         return siteURL.replace(request.getServletPath(), "");
     }
+
+
 
 }
