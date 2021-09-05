@@ -17,13 +17,14 @@ import java.io.UnsupportedEncodingException;
 
 public interface UserRegistrationApi {
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-   ResponseEntity registerUser( @Valid @RequestBody UserDTO userDto , HttpServletRequest request, @RequestParam(name="g-recaptcha-response") String recaptchaResponse) throws UnsupportedEncodingException, MessagingException;
+   ResponseEntity registerUser( @Valid @RequestBody UserDTO userDto , HttpServletRequest request, @RequestParam String recaptchaResponse) throws Exception;
 
 
     @GetMapping("/verify")
-    String verifyUser(@Param ("code") String code) ;
+    String verifyUser(@RequestParam ("code") String code) ;
 
 
 }
