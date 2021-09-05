@@ -68,10 +68,15 @@ public class UserRegistrationController implements UserRegistrationApi {
 
     @Override
     public String verifyUser(String code) {
+        String verificationString ;
         if (emailVerificationService.verify(code)) {
-            return Constants.MSG_VERIFICATION_SUCCESS;
+
+        verificationString = "<h3>Your E-mail has been verified.\n</h3>";
+        return verificationString;
+
         } else {
-            return Constants.MSG_VERIFICATION_FAILURE;
+             verificationString = " <h3>Something went wrong while verifying your E-mail, please contact support!\n</h3>";
+            return verificationString ;
         }
     }
 
