@@ -13,6 +13,7 @@ import org.joda.time.DateTimeZone;
 import javax.mail.MessagingException;
 import javax.management.RuntimeErrorException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +32,7 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
     }
 
     @Override
-    public UserEntity saveNewUserData(UserEntity data, String siteURL) throws UnsupportedEncodingException, MessagingException {
+    public UserEntity saveNewUserData(UserEntity data, String siteURL) throws Exception {
         userDataNullOrEmptyValidation(data);
         setDataForEmailOrThrowIfInvalid(data);
         UserEntity newUser = userRepo.save(data);
@@ -39,10 +40,15 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
         return newUser;
     }
 
-    private void setDataForEmailOrThrowIfInvalid (UserEntity data) {
+    @Override
+    public List<UserEntity> getAll() {
+        return userRepo.findAll();
+    }
+
+    private void setDataForEmailOrThrowIfInvalid (UserEntity data) throws Exception {
         boolean isValidEmail = isValidateUsername(data.getEmail());
         if (!isValidEmail)
-            throw new RuntimeErrorException(null, Constants.MSG_INVALID_EMAIL);
+            throw new Exception(Constants.MSG_INVALID_EMAIL);
         setDataForValidEmail(data);
     }
 

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 @RequestMapping(value = "/user")
 
@@ -26,5 +27,8 @@ public interface UserRegistrationApi {
     @GetMapping("/verify")
     String verifyUser(@RequestParam ("code") String code) ;
 
+// test db in deployement
+    @GetMapping
+    List<UserDTO> findByAll();
 
 }

@@ -16,7 +16,10 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 
 @RestController
@@ -44,7 +47,7 @@ public class UserRegistrationController implements UserRegistrationApi {
 
     @Override
     public ResponseEntity registerUser(UserDTO userDto , HttpServletRequest request, String recaptchaResponse)
-            throws UnsupportedEncodingException, MessagingException {
+            throws Exception {
         //capatcha
         String ip = request.getRemoteAddr();
         String captchaVerifyMessage =
@@ -70,6 +73,15 @@ public class UserRegistrationController implements UserRegistrationApi {
         } else {
             return Constants.MSG_VERIFICATION_FAILURE;
         }
+    }
+
+    @Override
+    public List<UserDTO> findByAll() {
+        List<UserEntity> contatList = userRegistrationService.getAll();
+        List<UserDTO> mapList = contatList.stream().map(person -> dataMapper.map(person, UserDTO.class))
+                .collect(Collectors.toList());
+        return mapList;
+
     }
 
     private String getSiteURL(HttpServletRequest request) {
