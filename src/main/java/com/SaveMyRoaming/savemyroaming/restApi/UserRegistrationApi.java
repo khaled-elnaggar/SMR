@@ -18,7 +18,7 @@ import java.util.List;
 
 public interface UserRegistrationApi {
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "*")
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
    ResponseEntity registerUser( @Valid @RequestBody UserDTO userDto , HttpServletRequest request, @RequestParam String recaptchaResponse) throws Exception;
