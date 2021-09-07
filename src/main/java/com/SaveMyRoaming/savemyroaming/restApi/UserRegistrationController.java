@@ -1,6 +1,8 @@
 package com.SaveMyRoaming.savemyroaming.restApi;
 
 import com.SaveMyRoaming.savemyroaming.DTO.UserDTO;
+import com.SaveMyRoaming.savemyroaming.capatcha.CaptchaService;
+import com.SaveMyRoaming.savemyroaming.capatcha.RecaptchaArgument;
 import com.SaveMyRoaming.savemyroaming.capatcha.RecaptchaService;
 import com.SaveMyRoaming.savemyroaming.entities.UserEntity;
 import com.SaveMyRoaming.savemyroaming.services.EmailVerificationService;
@@ -37,7 +39,7 @@ public class UserRegistrationController implements UserRegistrationApi {
     private EmailVerificationService emailVerificationService;
     
     @Autowired
-    private RecaptchaService recaptchaService;
+    private CaptchaService captchaService;
 
 
     public UserRegistrationController(ModelMapper dataMapper, UserRegistrationService userRegistrationService) {
@@ -50,8 +52,11 @@ public class UserRegistrationController implements UserRegistrationApi {
             throws Exception {
         //capatcha
         String ip = request.getRemoteAddr();
+//        RecaptchaArgument recaptchaArguments = new RecaptchaArgument() ;
+//        recaptchaArguments.setIp(ip);
+//        recaptchaArguments.setRecaptchaResponse(recaptchaResponse);
         String captchaVerifyMessage =
-                recaptchaService.verifyRecaptcha(ip, recaptchaResponse);
+                (String)captchaService.verifyCaptcha(recaptchaResponse);
 
         if ( StringUtils.isNotEmpty(captchaVerifyMessage)) {
             Map<String, Object> response = new HashMap<>();

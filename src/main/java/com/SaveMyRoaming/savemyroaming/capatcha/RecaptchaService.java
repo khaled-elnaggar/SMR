@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,15 +16,14 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service
-public class RecaptchaService {
+public class RecaptchaService implements CaptchaService <RecaptchaArgument,String>{
 
         @Value("${google.recaptcha.key.secret}") String recaptchaSecret;
         private static final String GOOGLE_RECAPTCHA_VERIFY_URL =
                 "https://www.google.com/recaptcha/api/siteverify";
         @Autowired RestTemplateBuilder restTemplateBuilder;
 
-        public String verifyRecaptcha(String ip, String recaptchaResponse){
+        private String verifyRecaptcha(String ip, String recaptchaResponse){
                 Map<String, String> body = new HashMap<>();
                 body.put("secret", recaptchaSecret);
                 body.put("response", recaptchaResponse);
@@ -46,5 +46,11 @@ public class RecaptchaService {
                 }else {
                         return StringUtils.EMPTY;
                 }
+        }
+
+        @Override
+        public String verifyCaptcha(RecaptchaArgument recaptchaArguments ) {
+
+                return verifyRecaptcha(recaptchaArguments.getIp(), recaptchaArguments.getRecaptchaResponse());
         }
 }

@@ -81,7 +81,7 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 
     private void checkIfUniqueEmailOrThrow(UserEntity data, UserEntity userEmail) {
         if (userEmail != null && data.getEmail().equals(userEmail.getEmail()))
-                throw new RuntimeErrorException(null, Constants.MSG_ERROR_EMPTY_USEREMAIL);
+            throw new RuntimeErrorException(null, Constants.MSG_ERROR_EMPTY_USEREMAIL);
     }
 
     private String getDate() {

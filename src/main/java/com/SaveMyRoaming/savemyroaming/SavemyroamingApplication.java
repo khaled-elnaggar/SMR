@@ -1,5 +1,8 @@
 package com.SaveMyRoaming.savemyroaming;
 
+import com.SaveMyRoaming.savemyroaming.capatcha.CaptchaService;
+import com.SaveMyRoaming.savemyroaming.capatcha.MockCaptchaService;
+import com.SaveMyRoaming.savemyroaming.capatcha.RecaptchaService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -13,14 +16,19 @@ public class SavemyroamingApplication {
 		SpringApplication.run(SavemyroamingApplication.class, args);
 	}
 
-	@Bean
-	public WebMvcConfigurer corsConfigurer() {
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("*");
-			}
-		};
+//	@Bean
+//	public WebMvcConfigurer corsConfigurer() {
+//		return new WebMvcConfigurer() {
+//			@Override
+//			public void addCorsMappings(CorsRegistry registry) {
+//				registry.addMapping("/**").allowedOrigins("*");
+//			}
+//		};
+//	}
+
+		@Bean
+	public CaptchaService getCapatchaImplementation (){
+		return new MockCaptchaService();
 	}
 
 }

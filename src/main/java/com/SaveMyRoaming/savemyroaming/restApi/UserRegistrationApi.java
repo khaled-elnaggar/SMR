@@ -18,7 +18,7 @@ import java.util.List;
 
 public interface UserRegistrationApi {
 
-    @CrossOrigin(origins = "*")
+//    @CrossOrigin(origins = "*")
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
    ResponseEntity registerUser( @Valid @RequestBody UserDTO userDto , HttpServletRequest request, @RequestParam String recaptchaResponse) throws Exception;
@@ -26,6 +26,7 @@ public interface UserRegistrationApi {
 
     @GetMapping("/verify")
     String verifyUser(@RequestParam ("code") String code) ;
+
 
 // test db in deployement
     @GetMapping
