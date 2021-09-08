@@ -52,11 +52,13 @@ public class UserRegistrationController implements UserRegistrationApi {
             throws Exception {
         //capatcha
         String ip = request.getRemoteAddr();
-//        RecaptchaArgument recaptchaArguments = new RecaptchaArgument() ;
-//        recaptchaArguments.setIp(ip);
-//        recaptchaArguments.setRecaptchaResponse(recaptchaResponse);
+        RecaptchaArgument recaptchaArguments = new RecaptchaArgument() ;
+        recaptchaArguments.setIp(ip);
+        recaptchaArguments.setRecaptchaResponse(recaptchaResponse);
+//        String VerifyMessage =
+//                (String)captchaService.verifyCaptcha(recaptchaResponse);
         String captchaVerifyMessage =
-                (String)captchaService.verifyCaptcha(recaptchaResponse);
+                (String)captchaService.verifyCaptcha(recaptchaArguments);
 
         if ( StringUtils.isNotEmpty(captchaVerifyMessage)) {
             Map<String, Object> response = new HashMap<>();

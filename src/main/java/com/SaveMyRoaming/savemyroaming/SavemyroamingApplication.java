@@ -26,9 +26,9 @@ public class SavemyroamingApplication {
 //		};
 //	}
 
-		@Bean
-	public CaptchaService getCapatchaImplementation (){
-		return new MockCaptchaService();
-	}
+//		@Bean
+//	public CaptchaService getCapatchaImplementation (){
+//		return new MockCaptchaService();
+//	}
 
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Service
 public class RecaptchaService implements CaptchaService <RecaptchaArgument,String>{
 
         @Value("${google.recaptcha.key.secret}") String recaptchaSecret;

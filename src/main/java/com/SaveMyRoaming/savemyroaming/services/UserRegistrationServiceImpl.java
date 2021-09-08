@@ -36,7 +36,13 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
         userDataNullOrEmptyValidation(data);
         setDataForEmailOrThrowIfInvalid(data);
         UserEntity newUser = userRepo.save(data);
-        emailVerificationService.sendVerificationEmail(data, siteURL);
+        try {
+            emailVerificationService.sendVerificationEmail(data, siteURL);
+            System.out.println("Email sent.");
+        } catch (Exception ex) {
+            System.out.println("Failed to sent email.");
+        }
+
         return newUser;
     }
 

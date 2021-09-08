@@ -54,6 +54,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService{
 
             mailSender.send(message);
 
+
     }
 
     @Override
