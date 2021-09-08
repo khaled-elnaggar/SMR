@@ -68,7 +68,7 @@ public class UserRegistrationController implements UserRegistrationApi {
         }
 
         UserEntity data = dataMapper.map(userDto, UserEntity.class);
-        UserEntity newUser = userRegistrationService.saveNewUserData(data,getSiteURL(request));
+        UserEntity newUser = userRegistrationService.saveNewUserData(data);
         UserDTO createdUser = dataMapper.map(newUser, UserDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -95,12 +95,6 @@ public class UserRegistrationController implements UserRegistrationApi {
         return mapList;
 
     }
-
-    private String getSiteURL(HttpServletRequest request) {
-        String siteURL = request.getRequestURL().toString();
-        return siteURL.replace(request.getServletPath(), "");
-    }
-
 
 
 }

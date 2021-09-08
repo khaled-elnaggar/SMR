@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserRegistrationService {
 
-    UserEntity saveNewUserData(UserEntity data, String siteURL) throws Exception;
+    UserEntity saveNewUserData(UserEntity data) throws Exception;
 
     List<UserEntity> getAll();
 }
