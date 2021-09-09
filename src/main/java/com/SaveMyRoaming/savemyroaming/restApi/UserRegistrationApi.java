@@ -21,7 +21,7 @@ public interface UserRegistrationApi {
 //    @CrossOrigin(origins = "*")
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-   ResponseEntity <UserDTO>registerUser( @Valid @RequestBody UserDTO userDto , HttpServletRequest request, @RequestParam String recaptchaResponse) throws Exception;
+   ResponseEntity registerUser( @Valid @RequestBody UserDTO userDto , HttpServletRequest request, @RequestParam String recaptchaResponse) throws Exception;
 
 
     @GetMapping("/verify")

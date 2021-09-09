@@ -12,18 +12,19 @@ public class UserDTO {
 
     private String email;
 
-    private String verificationCode;
 
 
     public UserDTO() {
     }
 
-    public UserDTO(String first_name, String last_name, String email, String verificationCode) {
+    public UserDTO( String first_name, String last_name, String email) {
+
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
-        this.verificationCode = verificationCode;
+
     }
+
 
     public String getFirst_name() {
         return first_name;
@@ -49,11 +50,4 @@ public class UserDTO {
         this.email = email;
     }
 
-    public String getVerificationCode() {
-        return verificationCode;
-    }
-
-    public void setVerificationCode(String verificationCode) {
-        this.verificationCode = verificationCode;
-    }
 }

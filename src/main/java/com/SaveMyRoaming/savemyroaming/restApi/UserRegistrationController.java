@@ -8,7 +8,6 @@ import com.SaveMyRoaming.savemyroaming.entities.UserEntity;
 import com.SaveMyRoaming.savemyroaming.services.EmailVerificationService;
 import com.SaveMyRoaming.savemyroaming.services.UserRegistrationService;
 import com.SaveMyRoaming.savemyroaming.utils.Constants;
-import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +25,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 @RestController
-@Slf4j
 public class UserRegistrationController implements UserRegistrationApi {
 
 
@@ -50,7 +48,7 @@ public class UserRegistrationController implements UserRegistrationApi {
     }
 
     @Override
-    public ResponseEntity <UserDTO>registerUser(UserDTO userDto , HttpServletRequest request, String recaptchaResponse)
+    public ResponseEntity registerUser(UserDTO userDto , HttpServletRequest request, String recaptchaResponse)
             throws Exception {
         //capatcha
         String ip = request.getRemoteAddr();
@@ -59,21 +57,20 @@ public class UserRegistrationController implements UserRegistrationApi {
         recaptchaArguments.setRecaptchaResponse(recaptchaResponse);
 //        String VerifyMessage =
 //                (String)captchaService.verifyCaptcha(recaptchaResponse);
-        log.info("capatcha verified responce");
         String captchaVerifyMessage =
                 (String)captchaService.verifyCaptcha(recaptchaArguments);
-        log.info("capatcha verified");
+
         if ( StringUtils.isNotEmpty(captchaVerifyMessage)) {
             Map<String, Object> response = new HashMap<>();
             response.put("message", captchaVerifyMessage);
-        log.info("bad capatcha");
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(response);
         }
 
         UserEntity data = dataMapper.map(userDto, UserEntity.class);
-        UserEntity newUser = userRegistrationService.saveNewUserData(data);
+        UserEntity newUser = userRegistrationService.saveNewUserData(data,getSiteURL(request));
         UserDTO createdUser = dataMapper.map(newUser, UserDTO.class);
-        return ResponseEntity.ok().body(createdUser);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Override
@@ -98,6 +95,12 @@ public class UserRegistrationController implements UserRegistrationApi {
         return mapList;
 
     }
+
+    private String getSiteURL(HttpServletRequest request) {
+        String siteURL = request.getRequestURL().toString();
+        return siteURL.replace(request.getServletPath(), "");
+    }
+
 
 
 }

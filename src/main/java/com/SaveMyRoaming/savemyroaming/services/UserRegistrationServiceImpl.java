@@ -22,6 +22,8 @@ import java.util.regex.Pattern;
 public class UserRegistrationServiceImpl implements UserRegistrationService {
 
     @Autowired
+    private EmailVerificationService emailVerificationService;
+
     private UserRepository userRepo;
 
 
@@ -30,10 +32,17 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
     }
 
     @Override
-    public UserEntity saveNewUserData(UserEntity data) throws Exception {
+    public UserEntity saveNewUserData(UserEntity data, String siteURL) throws Exception {
         userDataNullOrEmptyValidation(data);
         setDataForEmailOrThrowIfInvalid(data);
         UserEntity newUser = userRepo.save(data);
+        try {
+            emailVerificationService.sendVerificationEmail(data, siteURL);
+            System.out.println("Email sent.");
+        } catch (Exception ex) {
+            System.out.println("Failed to sent email.");
+        }
+
         return newUser;
     }
 

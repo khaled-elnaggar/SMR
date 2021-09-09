@@ -36,7 +36,7 @@ public class UserEntity {
     private String timezone;
 
 
-    @Column(length = 4)
+    @Column(name = "verification_code", length = 4)
     private String verificationCode;
 
     @Column
