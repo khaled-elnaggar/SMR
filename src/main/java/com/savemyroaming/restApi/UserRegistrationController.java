@@ -1,12 +1,11 @@
 package com.savemyroaming.restApi;
 
+import com.savemyroaming.DTO.RegisterUserData;
 import com.savemyroaming.DTO.UserDTO;
-import com.savemyroaming.capatcha.CaptchaService;
-import com.savemyroaming.capatcha.RecaptchaArgument;
 import com.savemyroaming.entities.UserEntity;
 import com.savemyroaming.services.EmailVerificationService;
 import com.savemyroaming.services.UserRegistrationService;
-import org.apache.commons.lang3.StringUtils;
+import com.savemyroaming.utils.UserGuard;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,26 +13,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
 public class UserRegistrationController implements UserRegistrationApi {
-
-
   @Autowired
   private ModelMapper dataMapper;
 
+
+  @Autowired
+  private UserGuard userGuard;
   @Autowired
   private UserRegistrationService userRegistrationService;
 
   @Autowired
   private EmailVerificationService emailVerificationService;
-
-  @Autowired
-  private CaptchaService captchaService;
 
 
   public UserRegistrationController(ModelMapper dataMapper, UserRegistrationService userRegistrationService) {
@@ -44,26 +39,10 @@ public class UserRegistrationController implements UserRegistrationApi {
   @Override
   public ResponseEntity registerUser(UserDTO userDto, HttpServletRequest request, String recaptchaResponse)
           throws Exception {
-    //capatcha
-    String ip = request.getRemoteAddr();
-    RecaptchaArgument recaptchaArguments = new RecaptchaArgument();
-    recaptchaArguments.setIp(ip);
-    recaptchaArguments.setRecaptchaResponse(recaptchaResponse);
-//        String VerifyMessage =
-//                (String)captchaService.verifyCaptcha(recaptchaResponse);
-    String captchaVerifyMessage =
-            (String) captchaService.verifyCaptcha(recaptchaArguments);
-
-    if (StringUtils.isNotEmpty(captchaVerifyMessage)) {
-      Map<String, Object> response = new HashMap<>();
-      response.put("message", captchaVerifyMessage);
-      return ResponseEntity.badRequest()
-              .body(response);
-    }
+    userGuard.validateRecaptcha(request, recaptchaResponse);
 
     UserEntity data = dataMapper.map(userDto, UserEntity.class);
-    UserEntity newUser = userRegistrationService.saveNewUserData(data, getSiteURL(request));
-    UserDTO createdUser = dataMapper.map(newUser, UserDTO.class);
+    UserEntity newUser = userRegistrationService.saveNewUserData(new RegisterUserData(data, getSiteURL(request)));
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 

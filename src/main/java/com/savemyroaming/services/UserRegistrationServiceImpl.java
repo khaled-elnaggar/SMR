@@ -1,5 +1,6 @@
 package com.savemyroaming.services;
 
+import com.savemyroaming.DTO.RegisterUserData;
 import com.savemyroaming.entities.UserEntity;
 import com.savemyroaming.repositories.UserRepository;
 import com.savemyroaming.utils.Constants;
@@ -30,12 +31,12 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
   }
 
   @Override
-  public UserEntity saveNewUserData(UserEntity data, String siteURL) throws Exception {
-    userDataNullOrEmptyValidation(data);
-    setDataForEmailOrThrowIfInvalid(data);
-    UserEntity newUser = userRepo.save(data);
+  public UserEntity saveNewUserData(RegisterUserData registerUserData) throws Exception {
+    userDataNullOrEmptyValidation(registerUserData.getData());
+    setDataForEmailOrThrowIfInvalid(registerUserData.getData());
+    UserEntity newUser = userRepo.save(registerUserData.getData());
     try {
-      emailVerificationService.sendVerificationEmail(data, siteURL);
+      emailVerificationService.sendVerificationEmail(registerUserData.getData(), registerUserData.getSiteURL());
       System.out.println("Email sent.");
     } catch (Exception ex) {
       System.out.println("Failed to sent email.");
